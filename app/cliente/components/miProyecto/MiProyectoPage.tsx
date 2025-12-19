@@ -32,6 +32,16 @@ interface Modificacion {
 export default function MiProyectoPage({ proyecto }: { proyecto: Project | null }) {
   const [modificacion, setModificacion] = useState("");
   const [modificacionesEnviadas, setModificacionesEnviadas] = useState<Modificacion[]>([]);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Cargar modificaciones
   useEffect(() => {
@@ -69,12 +79,12 @@ export default function MiProyectoPage({ proyecto }: { proyecto: Project | null 
   }
 
   return (
-    <div style={{ maxWidth: 1600 }}>
+    <div style={{ maxWidth: isMobile ? "100%" : 1600 }}>
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: proyecto?.url_proyecto ? "1fr 1.2fr" : "1fr",
-          gap: 24,
+          gridTemplateColumns: isMobile ? "1fr" : (proyecto?.url_proyecto ? "1fr 1.2fr" : "1fr"),
+          gap: isMobile ? 16 : 24,
           alignItems: "start",
         }}
       >

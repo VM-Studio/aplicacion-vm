@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { sidebarStyle } from "./adminStyles";
-import { FiHome, FiBell, FiUsers, FiCheckSquare, FiPlus, FiMenu, FiDollarSign, FiVideo, FiFileText, FiEdit3 } from "react-icons/fi";
+import { FiHome, FiBell, FiUsers, FiCheckSquare, FiPlus, FiDollarSign, FiVideo, FiFileText, FiEdit3, FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { SidebarSection } from "../types";
 
 interface Props {
@@ -36,6 +36,17 @@ export default function AdminSidebar({
 }: Props) {
   // Calcular total de mensajes no leídos para mostrar badge en la barra
   const [totalUnread, setTotalUnread] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    // Detectar tamaño de pantalla
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   useEffect(() => {
     // Recibe el valor desde AdminMain si lo pasas como prop, o usa un contexto global si prefieres.
@@ -44,42 +55,34 @@ export default function AdminSidebar({
 
   return (
     <>
-      {/* Botón fijo para abrir/cerrar la barra, siempre visible */}
-      <button
-        onClick={onToggleSidebar}
-        style={{
-          position: "fixed",
-          top: 108,
-          left: 8,
-          background: "#fff",
-          border: "1px solid #e6eaf0",
-          borderRadius: "50%",
-          width: 36,
-          height: 36,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          boxShadow: "0 2px 8px #0002",
-          cursor: "pointer",
-          zIndex: 2001,
-          transition: "left 0.2s",
-        }}
-        title={sidebarOpen ? "Cerrar barra" : "Abrir barra"}
-      >
-        <FiMenu size={22} color="#0049ff" />
-      </button>
+      {/* Overlay para móvil */}
+      {isMobile && sidebarOpen && (
+        <div
+          onClick={onToggleSidebar}
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "rgba(0,0,0,0.5)",
+            zIndex: 119,
+          }}
+        />
+      )}
+
       <aside
         style={{
           ...sidebarStyle,
           borderRight: "1.5px solid #e6eaf0",
-          height: "calc(100vh - 100px)",
+          height: isMobile ? "100vh" : "calc(100vh - 100px)",
           padding: "8px 0 8px 0",
           boxSizing: "border-box",
           position: "fixed",
-          top: 100,
-          left: 0,
-          transition: "width 0.2s",
-          width: sidebarOpen ? 220 : 48,
+          top: isMobile ? 0 : 100,
+          left: isMobile && !sidebarOpen ? "-100%" : 0,
+          transition: "all 0.3s ease",
+          width: isMobile ? (sidebarOpen ? "280px" : "0") : (sidebarOpen ? 220 : 48),
           overflowY: "auto",
           overflowX: "hidden",
           background: "#f6f7fa",
@@ -88,11 +91,47 @@ export default function AdminSidebar({
           flexDirection: "column",
         }}
       >
-        <nav style={{ width: "100%", display: "flex", flexDirection: "column", gap: 2, marginTop: 8, flex: 1 }}>
+        {/* Botón toggle en esquina superior derecha */}
+        {!isMobile && (
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onToggleSidebar();
+            }}
+            style={{
+              position: "absolute",
+              top: 8,
+              right: 8,
+              width: 32,
+              height: 32,
+              padding: 0,
+              background: "#fff",
+              border: "1px solid #e6eaf0",
+              borderRadius: 8,
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              transition: "all 0.2s",
+              color: "#0049ff",
+              boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+              zIndex: 200,
+            }}
+            title={sidebarOpen ? "Contraer barra" : "Expandir barra"}
+          >
+            {sidebarOpen ? <FiChevronLeft size={18} /> : <FiChevronRight size={18} />}
+          </button>
+        )}
+        
+        <nav style={{ width: "100%", display: "flex", flexDirection: "column", gap: 8, marginTop: isMobile ? 60 : 8, flex: 1 }}>
           {sections.map(({ label, icon }) => (
             <button
               key={label}
-              onClick={() => setSelected(label)}
+              onClick={() => {
+                setSelected(label);
+                if (isMobile) onToggleSidebar();
+              }}
               style={{
                 width: "90%",
                 margin: "0 auto",
@@ -102,19 +141,23 @@ export default function AdminSidebar({
                 border: "none",
                 outline: "none",
                 borderRadius: 10,
-                fontSize: 16,
-                padding: "6px 10px",
+                fontSize: isMobile ? 15 : 16,
+                padding: isMobile ? "10px 12px" : "8px 10px",
                 background: "transparent",
                 color: selected === label ? "#0049ff" : "#222",
                 fontWeight: 500,
                 transition: "color 0.15s",
                 cursor: "pointer",
                 position: "relative",
+                whiteSpace: isMobile || sidebarOpen ? "nowrap" : "normal",
+                justifyContent: isMobile || sidebarOpen ? "flex-start" : "center",
               }}
             >
-              {icon}
-              {label}
-              {label === "Notificaciones" && totalUnread > 0 && (
+              <span style={{ display: "flex", alignItems: "center", flexShrink: 0 }}>
+                {icon}
+              </span>
+              {(isMobile || sidebarOpen) && <span>{label}</span>}
+              {label === "Notificaciones" && totalUnread > 0 && (isMobile || sidebarOpen) && (
                 <span style={{
                   background: "#ff3b3b",
                   color: "#fff",
@@ -135,68 +178,79 @@ export default function AdminSidebar({
             </button>
           ))}
         </nav>
-        <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: 6, paddingTop: 8, paddingBottom: 16, borderTop: "1px solid #e6eaf0", marginTop: "auto" }}>
-          <button
-            onClick={onShowClientModal}
-            style={{
-              width: "90%",
-              margin: "0 auto",
-              background: "transparent",
-              border: "1px solid #ccc",
-              borderRadius: 10,
-              fontSize: 15,
-              padding: "6px 10px",
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-              cursor: "pointer",
-              color: "#222",
-              fontWeight: 500,
-            }}
-          >
-            <FiPlus /> Nuevo Cliente
-          </button>
-          <button
-            onClick={onShowProjectModal}
-            style={{
-              width: "90%",
-              margin: "0 auto",
-              background: "transparent",
-              border: "1px solid #ccc",
-              borderRadius: 10,
-              fontSize: 15,
-              padding: "6px 10px",
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-              cursor: "pointer",
-              color: "#222",
-              fontWeight: 500,
-            }}
-          >
-            <FiPlus /> Nuevo Proyecto
-          </button>
-          <button
-            onClick={onShowChecklistModal}
-            style={{
-              width: "90%",
-              margin: "0 auto",
-              background: "transparent",
-              border: "1px solid #ccc",
-              borderRadius: 10,
-              fontSize: 15,
-              padding: "6px 10px",
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-              cursor: "pointer",
-              color: "#222",
-              fontWeight: 500,
-            }}
-          >
-            <FiCheckSquare /> Ver Checklist
-          </button>
-        </div>
+        {(isMobile || sidebarOpen) && (
+          <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: 6, paddingTop: 8, paddingBottom: 16, borderTop: "1px solid #e6eaf0", marginTop: "auto" }}>
+            <button
+              onClick={() => {
+                onShowClientModal();
+                if (isMobile) onToggleSidebar();
+              }}
+              style={{
+                width: "90%",
+                margin: "0 auto",
+                background: "transparent",
+                border: "1px solid #ccc",
+                borderRadius: 10,
+                fontSize: isMobile ? 14 : 15,
+                padding: isMobile ? "10px 12px" : "6px 10px",
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                cursor: "pointer",
+                color: "#222",
+                fontWeight: 500,
+              }}
+            >
+              <FiPlus /> Nuevo Cliente
+            </button>
+            <button
+              onClick={() => {
+                onShowProjectModal();
+                if (isMobile) onToggleSidebar();
+              }}
+              style={{
+                width: "90%",
+                margin: "0 auto",
+                background: "transparent",
+                border: "1px solid #ccc",
+                borderRadius: 10,
+                fontSize: isMobile ? 14 : 15,
+                padding: isMobile ? "10px 12px" : "6px 10px",
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                cursor: "pointer",
+                color: "#222",
+                fontWeight: 500,
+              }}
+            >
+              <FiPlus /> Nuevo Proyecto
+            </button>
+            <button
+              onClick={() => {
+                onShowChecklistModal();
+                if (isMobile) onToggleSidebar();
+              }}
+              style={{
+                width: "90%",
+                margin: "0 auto",
+                background: "transparent",
+                border: "1px solid #ccc",
+                borderRadius: 10,
+                fontSize: isMobile ? 14 : 15,
+                padding: isMobile ? "10px 12px" : "6px 10px",
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                cursor: "pointer",
+                color: "#222",
+                fontWeight: 500,
+              }}
+            >
+              <FiCheckSquare /> Ver Checklist
+            </button>
+          </div>
+        )}
       </aside>
     </>
   );

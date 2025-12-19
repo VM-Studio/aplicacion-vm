@@ -101,11 +101,6 @@ export default function ChecklistPage({
     }
   };
 
-  // Obtener color según estado
-  const getStatusColor = (checked: boolean) => {
-    return checked ? "#10b981" : "#f59e0b";
-  };
-
   return (
     <div
       style={{
@@ -575,11 +570,11 @@ export default function ChecklistPage({
                         width: 32,
                         height: 32,
                         borderRadius: 8,
-                        background: "#0049ff",
+                        background: "rgba(0, 0, 0, 0.06)",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        color: "#fff",
+                        color: "#111",
                         fontSize: 12,
                         fontWeight: 700,
                         flexShrink: 0,
@@ -636,12 +631,12 @@ export default function ChecklistPage({
                         gap: 6,
                         padding: "6px 12px",
                         background: task.checked
-                          ? "rgba(16, 185, 129, 0.1)"
-                          : "rgba(245, 158, 11, 0.1)",
+                          ? "rgba(0, 0, 0, 0.06)"
+                          : "rgba(0, 0, 0, 0.04)",
                         borderRadius: 6,
                         fontSize: 12,
                         fontWeight: 600,
-                        color: getStatusColor(task.checked),
+                        color: task.checked ? "#111" : "#666",
                       }}
                     >
                       {task.checked ? (
@@ -753,8 +748,8 @@ export default function ChecklistPage({
                         width: 32,
                         height: 32,
                         borderRadius: 8,
-                        border: task.checked ? "none" : "2px solid #ccc",
-                        background: task.checked ? "#10b981" : "#fff",
+                        border: task.checked ? "2px solid #111" : "2px solid #ccc",
+                        background: task.checked ? "#111" : "#fff",
                         cursor: "pointer",
                         display: "flex",
                         alignItems: "center",
@@ -777,11 +772,11 @@ export default function ChecklistPage({
                           width: 36,
                           height: 36,
                           borderRadius: 8,
-                          background: "#0049ff",
+                          background: "rgba(0, 0, 0, 0.06)",
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
-                          color: "#fff",
+                          color: "#111",
                           fontSize: 14,
                           fontWeight: 700,
                           flexShrink: 0,
@@ -857,12 +852,12 @@ export default function ChecklistPage({
                         gap: 6,
                         padding: "10px 16px",
                         background: task.checked
-                          ? "rgba(16, 185, 129, 0.1)"
-                          : "rgba(245, 158, 11, 0.1)",
+                          ? "rgba(0, 0, 0, 0.06)"
+                          : "rgba(0, 0, 0, 0.04)",
                         borderRadius: 10,
                         fontSize: 14,
                         fontWeight: 600,
-                        color: getStatusColor(task.checked),
+                        color: task.checked ? "#111" : "#666",
                         marginTop: 8,
                       }}
                     >

@@ -17,6 +17,8 @@ interface ClienteSidebarProps {
   selected: ClienteSidebarSection;
   setSelected: (section: ClienteSidebarSection) => void;
   unreadCount?: number;
+  isMobile?: boolean;
+  isOpen?: boolean;
 }
 
 const sections: {
@@ -35,23 +37,26 @@ export default function ClienteSidebar({
   selected,
   setSelected,
   unreadCount = 0,
+  isMobile = false,
+  isOpen = false,
 }: ClienteSidebarProps) {
   return (
     <aside
       style={{
         position: "fixed",
-        top: 80,
-        left: 0,
+        top: isMobile ? 0 : 80,
+        left: isMobile && !isOpen ? "-100%" : 0,
         bottom: 0,
-        width: 260,
+        width: isMobile ? "280px" : 260,
         background: "#fff",
         borderRight: "1.5px solid #e6eaf0",
-        padding: "32px 0 24px 0",
+        padding: isMobile ? "80px 0 24px 0" : "32px 0 24px 0",
         display: "flex",
         flexDirection: "column",
         overflowY: "auto",
-        zIndex: 50,
+        zIndex: 99,
         boxSizing: "border-box",
+        transition: "left 0.3s ease",
       }}
     >
       <nav

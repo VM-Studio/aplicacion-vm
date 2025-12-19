@@ -5,7 +5,10 @@ import { navStyle } from "./adminStyles";
 
 export default function AdminNavbar({ onLogout }: { onLogout: () => void }) {
   return (
-    <nav style={navStyle}>
+    <nav style={{
+      ...navStyle,
+      padding: "0 clamp(12px, 3vw, 32px)",
+    }}>
       <div style={{ display: "flex", alignItems: "center", height: "100%" }}>
         <Image
           src="/navbar.gif"
@@ -14,14 +17,14 @@ export default function AdminNavbar({ onLogout }: { onLogout: () => void }) {
           height={80}
           style={{
             objectFit: "contain",
-            marginLeft: 24,
+            width: "clamp(40px, 8vw, 80px)",
+            height: "auto",
           }}
         />
       </div>
       <button
         onClick={onLogout}
         style={{
-          marginRight: 32,
           background: "transparent",
           border: "none",
           cursor: "pointer",
@@ -29,12 +32,14 @@ export default function AdminNavbar({ onLogout }: { onLogout: () => void }) {
         }}
       >
         <Image
-          src="/cerrar.gif"
+          src="/nav.png"
           alt="Cerrar sesión"
           width={50}
           height={50}
           style={{
             objectFit: "contain",
+            width: "clamp(35px, 6vw, 50px)",
+            height: "auto",
           }}
         />
       </button>

@@ -63,6 +63,20 @@ export default function ClientePage() {
   const [pagos, setPagos] = useState<Payment[]>([]);
   const [showPayModal, setShowPayModal] = useState<{ pago: Payment } | null>(null);
   const chatEndRef = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // Detectar tamaño de pantalla
+  useEffect(() => {
+    const checkMobile = () => {
+      const mobile = window.innerWidth < 768;
+      setIsMobile(mobile);
+      if (!mobile) setSidebarOpen(false);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Verificar si ya tiene proyecto vinculado
   useEffect(() => {
@@ -297,18 +311,69 @@ export default function ClientePage() {
       }}
     >
       <ClienteNavbar onLogout={handleLogout} />
-      <div style={{ display: "flex", flex: 1, marginTop: 80 }}>
+      
+      {/* Overlay para móvil */}
+      {isMobile && sidebarOpen && (
+        <div
+          onClick={() => setSidebarOpen(false)}
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "rgba(0,0,0,0.5)",
+            zIndex: 98,
+          }}
+        />
+      )}
+      
+      <div style={{ display: "flex", flex: 1, marginTop: isMobile ? 60 : 80 }}>
         <ClienteSidebar
           selected={sidebarSection}
-          setSelected={setSidebarSection}
+          setSelected={(section) => {
+            setSidebarSection(section);
+            if (isMobile) setSidebarOpen(false);
+          }}
           unreadCount={unreadCount}
+          isMobile={isMobile}
+          isOpen={sidebarOpen}
         />
+        
+        {/* Botón para abrir sidebar en móvil */}
+        {isMobile && !sidebarOpen && (
+          <button
+            onClick={() => setSidebarOpen(true)}
+            style={{
+              position: "fixed",
+              bottom: 20,
+              right: 20,
+              width: 56,
+              height: 56,
+              borderRadius: "50%",
+              background: "#0049ff",
+              border: "none",
+              color: "#fff",
+              fontSize: 24,
+              fontWeight: "bold",
+              boxShadow: "0 4px 12px rgba(0, 73, 255, 0.3)",
+              cursor: "pointer",
+              zIndex: 99,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            ☰
+          </button>
+        )}
+        
         <main
           style={{
             flex: 1,
-            marginLeft: 260,
-            padding: 40,
-            minHeight: "calc(100vh - 80px)",
+            marginLeft: isMobile ? 0 : 260,
+            padding: isMobile ? 16 : 40,
+            minHeight: isMobile ? "calc(100vh - 60px)" : "calc(100vh - 80px)",
           }}
         >
           {sidebarSection === "Proyecto" && (

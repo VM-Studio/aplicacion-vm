@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Client } from "../../types";
 import {
   FiSearch,
@@ -28,6 +28,18 @@ export default function ClientesPage({ clients, onEdit, onDelete, onAdd }: Clien
   const [searchQuery, setSearchQuery] = useState("");
   const [filterRubro, setFilterRubro] = useState<string>("Todos");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      const mobile = window.innerWidth < 768;
+      setIsMobile(mobile);
+      if (mobile) setViewMode("list");
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Obtener rubros únicos
   const rubros = ["Todos", ...Array.from(new Set(clients.map((c) => c.rubro)))];
@@ -45,7 +57,7 @@ export default function ClientesPage({ clients, onEdit, onDelete, onAdd }: Clien
   return (
     <div
       style={{
-        height: "calc(100vh - 100px)",
+        height: isMobile ? "auto" : "calc(100vh - 100px)",
         background: "#f6f7fa",
         display: "flex",
         flexDirection: "column",
@@ -56,23 +68,37 @@ export default function ClientesPage({ clients, onEdit, onDelete, onAdd }: Clien
       <div
         style={{
           background: "#fff",
-          padding: "32px 40px",
+          padding: isMobile ? "20px 16px" : "32px 40px",
           borderBottom: "1px solid #e6eaf0",
         }}
       >
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
+        <div style={{ 
+          display: "flex", 
+          flexDirection: isMobile ? "column" : "row",
+          justifyContent: "space-between", 
+          alignItems: isMobile ? "flex-start" : "center", 
+          marginBottom: 24,
+          gap: isMobile ? 16 : 0,
+        }}>
           <div>
-            <h1 style={{ fontSize: 32, fontWeight: 700, color: "#111", marginBottom: 8, fontFamily: "var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif", letterSpacing: "-0.02em" }}>
+            <h1 style={{ 
+              fontSize: isMobile ? 24 : 32, 
+              fontWeight: 700, 
+              color: "#111", 
+              marginBottom: 8, 
+              fontFamily: "var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif", 
+              letterSpacing: "-0.02em" 
+            }}>
               Clientes
             </h1>
-            <p style={{ fontSize: 15, color: "#666" }}>
+            <p style={{ fontSize: isMobile ? 14 : 15, color: "#666" }}>
               Administra tu cartera de clientes
             </p>
           </div>
           <button
             onClick={onAdd}
             style={{
-              padding: "12px 24px",
+              padding: isMobile ? "10px 20px" : "12px 24px",
               background: "#0049ff",
               color: "#fff",
               border: "none",

@@ -26,6 +26,21 @@ export default function AdminPage() {
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [selectedSection, setSelectedSection] = useState<SidebarSection>("Proyectos");
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detectar tamaño de pantalla
+  useEffect(() => {
+    const checkMobile = () => {
+      const mobile = window.innerWidth < 768;
+      setIsMobile(mobile);
+      if (mobile) {
+        setSidebarOpen(false);
+      }
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Estados para clientes y proyectos
   const [clients, setClients] = useState<Client[]>([]);
@@ -564,12 +579,13 @@ export default function AdminPage() {
       />
       <div
         style={{
-          marginTop: 100,
-          marginLeft: sidebarOpen ? 220 : 48,
+          marginTop: isMobile ? 60 : 100,
+          marginLeft: isMobile ? 0 : (sidebarOpen ? 220 : 48),
           transition: "margin-left 0.2s",
           flex: 1,
-          minHeight: "calc(100vh - 100px)",
+          minHeight: isMobile ? "calc(100vh - 60px)" : "calc(100vh - 100px)",
           background: "#fff",
+          padding: isMobile ? "16px" : "0",
         }}
       >
         {/* Renderizar contenido según la sección seleccionada */}

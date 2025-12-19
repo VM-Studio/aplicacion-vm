@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Project, Client } from "../../types";
 import { FiCalendar, FiUser, FiCheckCircle, FiClock, FiAlertCircle, FiTrash2, FiGrid, FiList } from "react-icons/fi";
 
@@ -12,6 +12,18 @@ interface ProjectsPageProps {
 
 export default function ProjectsPage({ projects, clients, onSelectProject, onDeleteProject }: ProjectsPageProps) {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      const mobile = window.innerWidth < 768;
+      setIsMobile(mobile);
+      if (mobile) setViewMode("list");
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Función para obtener el nombre del cliente
   const getClientName = (clienteId: string) => {
@@ -63,68 +75,84 @@ export default function ProjectsPage({ projects, clients, onSelectProject, onDel
   };
 
   return (
-    <div style={{ padding: "0 32px 32px 32px" }}>
+    <div style={{ padding: isMobile ? "16px" : "0 32px 32px 32px" }}>
       {/* Header */}
-      <div style={{ marginBottom: 24, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <div style={{ 
+        marginBottom: 24, 
+        display: "flex", 
+        flexDirection: isMobile ? "column" : "row",
+        justifyContent: "space-between", 
+        alignItems: isMobile ? "flex-start" : "center",
+        gap: isMobile ? 16 : 0,
+      }}>
         <div>
-          <h1 style={{ fontSize: 32, fontWeight: 700, color: "#111", marginBottom: 8, fontFamily: "var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif", letterSpacing: "-0.02em" }}>
+          <h1 style={{ 
+            fontSize: isMobile ? 24 : 32, 
+            fontWeight: 700, 
+            color: "#111", 
+            marginBottom: 8, 
+            fontFamily: "var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif", 
+            letterSpacing: "-0.02em" 
+          }}>
             Proyectos
           </h1>
-          <p style={{ fontSize: 16, color: "#666" }}>
+          <p style={{ fontSize: isMobile ? 14 : 16, color: "#666" }}>
             {projects.length} {projects.length === 1 ? "proyecto" : "proyectos"} en total
           </p>
         </div>
         
         {/* Botones de vista */}
-        <div
-          style={{
-            display: "flex",
-            background: "#f6f7fa",
-            borderRadius: 10,
-            padding: 4,
-          }}
-        >
-          <button
-            onClick={() => setViewMode("grid")}
+        {!isMobile && (
+          <div
             style={{
-              padding: "8px 16px",
-              background: viewMode === "grid" ? "#fff" : "transparent",
-              border: "none",
-              borderRadius: 8,
-              cursor: "pointer",
               display: "flex",
-              alignItems: "center",
-              transition: "all 0.2s",
-              boxShadow: viewMode === "grid" ? "0 1px 3px rgba(0, 0, 0, 0.1)" : "none",
+              background: "#f6f7fa",
+              borderRadius: 10,
+              padding: 4,
             }}
           >
-            <FiGrid size={18} color={viewMode === "grid" ? "#0049ff" : "#666"} />
-          </button>
-          <button
-            onClick={() => setViewMode("list")}
-            style={{
-              padding: "8px 16px",
-              background: viewMode === "list" ? "#fff" : "transparent",
-              border: "none",
-              borderRadius: 8,
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              transition: "all 0.2s",
-              boxShadow: viewMode === "list" ? "0 1px 3px rgba(0, 0, 0, 0.1)" : "none",
-            }}
-          >
-            <FiList size={18} color={viewMode === "list" ? "#0049ff" : "#666"} />
-          </button>
-        </div>
+            <button
+              onClick={() => setViewMode("grid")}
+              style={{
+                padding: "8px 16px",
+                background: viewMode === "grid" ? "#fff" : "transparent",
+                border: "none",
+                borderRadius: 8,
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                transition: "all 0.2s",
+                boxShadow: viewMode === "grid" ? "0 1px 3px rgba(0, 0, 0, 0.1)" : "none",
+              }}
+            >
+              <FiGrid size={18} color={viewMode === "grid" ? "#0049ff" : "#666"} />
+            </button>
+            <button
+              onClick={() => setViewMode("list")}
+              style={{
+                padding: "8px 16px",
+                background: viewMode === "list" ? "#fff" : "transparent",
+                border: "none",
+                borderRadius: 8,
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                transition: "all 0.2s",
+                boxShadow: viewMode === "list" ? "0 1px 3px rgba(0, 0, 0, 0.1)" : "none",
+              }}
+            >
+              <FiList size={18} color={viewMode === "list" ? "#0049ff" : "#666"} />
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Tarjetas de Resumen */}
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-          gap: 20,
+          gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(auto-fit, minmax(200px, 1fr))",
+          gap: isMobile ? 12 : 20,
           marginBottom: 32,
         }}
       >
@@ -132,28 +160,28 @@ export default function ProjectsPage({ projects, clients, onSelectProject, onDel
           style={{
             background: "rgba(0, 0, 0, 0.02)",
             borderRadius: 12,
-            padding: "20px 24px",
+            padding: isMobile ? "16px" : "20px 24px",
             border: "1px solid rgba(0, 0, 0, 0.06)",
           }}
         >
-          <div style={{ color: "#666", fontSize: 14, marginBottom: 8, fontWeight: 500 }}>
+          <div style={{ color: "#666", fontSize: isMobile ? 12 : 14, marginBottom: 8, fontWeight: 500 }}>
             Total Proyectos
           </div>
-          <div style={{ color: "#111", fontSize: 28, fontWeight: 700 }}>{projects.length}</div>
+          <div style={{ color: "#111", fontSize: isMobile ? 24 : 28, fontWeight: 700 }}>{projects.length}</div>
         </div>
 
         <div
           style={{
             background: "rgba(0, 0, 0, 0.02)",
             borderRadius: 12,
-            padding: "20px 24px",
+            padding: isMobile ? "16px" : "20px 24px",
             border: "1px solid rgba(0, 0, 0, 0.06)",
           }}
         >
-          <div style={{ color: "#666", fontSize: 14, marginBottom: 8, fontWeight: 500 }}>
+          <div style={{ color: "#666", fontSize: isMobile ? 12 : 14, marginBottom: 8, fontWeight: 500 }}>
             En Progreso
           </div>
-          <div style={{ color: "#111", fontSize: 28, fontWeight: 700 }}>
+          <div style={{ color: "#111", fontSize: isMobile ? 24 : 28, fontWeight: 700 }}>
             {projects.filter((p) => p.estado === "en_progreso" && (p.avance || 0) < 100).length}
           </div>
         </div>
@@ -162,14 +190,14 @@ export default function ProjectsPage({ projects, clients, onSelectProject, onDel
           style={{
             background: "rgba(0, 0, 0, 0.02)",
             borderRadius: 12,
-            padding: "20px 24px",
+            padding: isMobile ? "16px" : "20px 24px",
             border: "1px solid rgba(0, 0, 0, 0.06)",
           }}
         >
-          <div style={{ color: "#666", fontSize: 14, marginBottom: 8, fontWeight: 500 }}>
+          <div style={{ color: "#666", fontSize: isMobile ? 12 : 14, marginBottom: 8, fontWeight: 500 }}>
             Completados
           </div>
-          <div style={{ color: "#111", fontSize: 28, fontWeight: 700 }}>
+          <div style={{ color: "#111", fontSize: isMobile ? 24 : 28, fontWeight: 700 }}>
             {projects.filter((p) => p.estado === "completado" || (p.avance || 0) === 100).length}
           </div>
         </div>
@@ -178,14 +206,14 @@ export default function ProjectsPage({ projects, clients, onSelectProject, onDel
           style={{
             background: "rgba(0, 0, 0, 0.02)",
             borderRadius: 12,
-            padding: "20px 24px",
+            padding: isMobile ? "16px" : "20px 24px",
             border: "1px solid rgba(0, 0, 0, 0.06)",
           }}
         >
-          <div style={{ color: "#666", fontSize: 14, marginBottom: 8, fontWeight: 500 }}>
+          <div style={{ color: "#666", fontSize: isMobile ? 12 : 14, marginBottom: 8, fontWeight: 500 }}>
             Pendientes
           </div>
-          <div style={{ color: "#111", fontSize: 28, fontWeight: 700 }}>
+          <div style={{ color: "#111", fontSize: isMobile ? 24 : 28, fontWeight: 700 }}>
             {projects.filter((p) => p.estado === "pendiente").length}
           </div>
         </div>

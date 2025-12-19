@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 
 interface ClienteNavbarProps {
@@ -7,6 +7,17 @@ interface ClienteNavbarProps {
 }
 
 export default function ClienteNavbar({ onLogout }: ClienteNavbarProps) {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   return (
     <nav
       style={{
@@ -14,13 +25,14 @@ export default function ClienteNavbar({ onLogout }: ClienteNavbarProps) {
         top: 0,
         left: 0,
         right: 0,
-        height: 80,
+        height: isMobile ? 60 : 80,
         background: "#fcfdfc",
         borderBottom: "1px solid #e6eaf0",
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
         zIndex: 100,
+        padding: isMobile ? "0 12px" : "0 24px",
       }}
     >
       {/* Logo navbar.gif a la izquierda */}
@@ -32,16 +44,16 @@ export default function ClienteNavbar({ onLogout }: ClienteNavbarProps) {
           height={80}
           style={{
             objectFit: "contain",
-            marginLeft: 24,
+            width: isMobile ? "50px" : "80px",
+            height: "auto",
           }}
         />
       </div>
 
-      {/* Botón cerrar.gif a la derecha */}
+      {/* Botón nav.png a la derecha */}
       <button
         onClick={onLogout}
         style={{
-          marginRight: 32,
           background: "transparent",
           border: "none",
           cursor: "pointer",
@@ -49,12 +61,14 @@ export default function ClienteNavbar({ onLogout }: ClienteNavbarProps) {
         }}
       >
         <Image
-          src="/cerrar.gif"
+          src="/nav.png"
           alt="Cerrar sesión"
           width={50}
           height={50}
           style={{
             objectFit: "contain",
+            width: isMobile ? "40px" : "50px",
+            height: "auto",
           }}
         />
       </button>

@@ -27,8 +27,8 @@ export default function Home() {
   }, [router]);
 
   // Tamaño de la imagen (ajustable)
-  const imageWidth = 360;
-  const imageHeight = 180;
+  const imageWidth = 280;
+  const imageHeight = 140;
   const barHeight = 8;
   const barColor = "#0049ff"; // Azul solicitado
 

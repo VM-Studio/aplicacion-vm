@@ -87,6 +87,26 @@ export default function NotificationsPage({ clients }: NotificationsPageProps) {
     }
   }, [selectedProject, loadMessagesForProject]);
 
+  // Marcar mensajes del cliente como leídos cuando el admin abre el chat
+  useEffect(() => {
+    if (selectedProject && messages.some((m) => m.project_id === selectedProject.id && m.sender === "client" && !m.read)) {
+      const unreadIds = messages
+        .filter((m) => m.project_id === selectedProject.id && m.sender === "client" && !m.read)
+        .map((m) => m.id);
+      
+      if (unreadIds.length > 0) {
+        supabase
+          .from("messages")
+          .update({ read: true })
+          .in("id", unreadIds)
+          .then(() => {
+            // Recargar todos los mensajes para actualizar contadores
+            loadAllMessages();
+          });
+      }
+    }
+  }, [selectedProject?.id, messages.length]); // eslint-disable-line react-hooks/exhaustive-deps
+
   // Filtrar proyectos por búsqueda (por nombre de proyecto o cliente)
   const filteredProjects = projects.filter(
     (project) =>
