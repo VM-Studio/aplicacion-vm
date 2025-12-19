@@ -284,7 +284,14 @@ export default function AdminPage() {
         .single();
 
       if (!error && data) {
-        setProjects((prev) => [...prev, data]);
+        // Verificar si el proyecto ya existe antes de agregarlo
+        setProjects((prev) => {
+          const exists = prev.some(p => p.id === data.id);
+          if (exists) {
+            return prev;
+          }
+          return [...prev, data];
+        });
         // Mostrar el código generado automáticamente
         setLastProjectCode(data.codigo_proyecto || data.codigo);
       } else {
@@ -293,6 +300,21 @@ export default function AdminPage() {
       }
       setProjectForm({ nombre: "", cliente_id: "", descripcion: "", fecha_estimada: "", url_vercel: "" });
       setShowProjectModal(false);
+    }
+  }
+
+  // Handler para eliminar proyecto
+  async function handleDeleteProject(projectId: string) {
+    const { error } = await supabase
+      .from("projects")
+      .delete()
+      .eq("id", projectId);
+
+    if (!error) {
+      setProjects((prev) => prev.filter((p) => p.id !== projectId));
+    } else {
+      alert("Error al eliminar el proyecto: " + (error?.message || "Error desconocido"));
+      console.error(error);
     }
   }
 
@@ -552,7 +574,7 @@ export default function AdminPage() {
       >
         {/* Renderizar contenido según la sección seleccionada */}
         {selectedSection === "Proyectos" && (
-          <ProjectsPage projects={projects} clients={clients} />
+          <ProjectsPage projects={projects} clients={clients} onDeleteProject={handleDeleteProject} />
         )}
         
         {selectedSection === "Notificaciones" && (

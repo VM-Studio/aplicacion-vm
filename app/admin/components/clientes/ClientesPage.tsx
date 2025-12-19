@@ -49,6 +49,7 @@ export default function ClientesPage({ clients, onEdit, onDelete, onAdd }: Clien
         background: "#f6f7fa",
         display: "flex",
         flexDirection: "column",
+        overflowY: "auto",
       }}
     >
       {/* Header */}
@@ -61,7 +62,7 @@ export default function ClientesPage({ clients, onEdit, onDelete, onAdd }: Clien
       >
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
           <div>
-            <h1 style={{ fontSize: 32, fontWeight: 700, color: "#111", marginBottom: 8 }}>
+            <h1 style={{ fontSize: 32, fontWeight: 700, color: "#111", marginBottom: 8, fontFamily: "var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif", letterSpacing: "-0.02em" }}>
               Clientes
             </h1>
             <p style={{ fontSize: 15, color: "#666" }}>
@@ -218,7 +219,7 @@ export default function ClientesPage({ clients, onEdit, onDelete, onAdd }: Clien
       </div>
 
       {/* Contenido */}
-      <div style={{ flex: 1, overflowY: "auto", padding: 40 }}>
+      <div style={{ flex: 1, padding: 40 }}>
         {filteredClients.length === 0 ? (
           <div
             style={{
@@ -243,7 +244,7 @@ export default function ClientesPage({ clients, onEdit, onDelete, onAdd }: Clien
             >
               <FiUser size={32} color="#ccc" />
             </div>
-            <h3 style={{ fontSize: 20, fontWeight: 600, color: "#111", marginBottom: 8 }}>
+            <h3 style={{ fontSize: 20, fontWeight: 600, color: "#111", marginBottom: 8, fontFamily: "var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif", letterSpacing: "-0.01em" }}>
               No se encontraron clientes
             </h3>
             <p style={{ fontSize: 15, color: "#666", marginBottom: 24 }}>
@@ -325,7 +326,7 @@ export default function ClientesPage({ clients, onEdit, onDelete, onAdd }: Clien
                       {client.nombre.charAt(0).toUpperCase()}
                     </div>
                     <div>
-                      <h3 style={{ fontSize: 18, fontWeight: 700, color: "#111", marginBottom: 4 }}>
+                      <h3 style={{ fontSize: 18, fontWeight: 700, color: "#111", marginBottom: 4, fontFamily: "var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif", letterSpacing: "-0.01em" }}>
                         {client.nombre}
                       </h3>
                       <div

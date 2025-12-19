@@ -179,7 +179,7 @@ export default function NotificationsPage({ clients }: NotificationsPageProps) {
             borderBottom: "1px solid #e6eaf0",
           }}
         >
-          <h2 style={{ fontSize: 24, fontWeight: 700, color: "#111", marginBottom: 16 }}>
+          <h2 style={{ fontSize: 24, fontWeight: 700, color: "#111", marginBottom: 16, fontFamily: "var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif", letterSpacing: "-0.02em" }}>
             Mensajes
           </h2>
           {/* Barra de búsqueda */}
@@ -371,7 +371,7 @@ export default function NotificationsPage({ clients }: NotificationsPageProps) {
           >
             <FiUser size={48} color="#ccc" />
           </div>
-          <h3 style={{ fontSize: 20, fontWeight: 600, color: "#111" }}>
+          <h3 style={{ fontSize: 20, fontWeight: 600, color: "#111", fontFamily: "var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif", letterSpacing: "-0.01em" }}>
             Selecciona un proyecto
           </h3>
           <p style={{ fontSize: 15 }}>Elige un proyecto de la lista para comenzar a chatear</p>

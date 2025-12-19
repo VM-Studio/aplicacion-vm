@@ -158,7 +158,7 @@ export default function PagosPage({
           }}
         >
           <div>
-            <h1 style={{ fontSize: 32, fontWeight: 700, color: "#111", marginBottom: 8 }}>
+            <h1 style={{ fontSize: 32, fontWeight: 700, color: "#111", marginBottom: 8, fontFamily: "var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif", letterSpacing: "-0.02em" }}>
               Gestión de Pagos
             </h1>
             <p style={{ fontSize: 15, color: "#666" }}>
@@ -514,7 +514,7 @@ export default function PagosPage({
             >
               <FiDollarSign size={32} color="#ccc" />
             </div>
-            <h3 style={{ fontSize: 20, fontWeight: 600, color: "#111", marginBottom: 8 }}>
+            <h3 style={{ fontSize: 20, fontWeight: 600, color: "#111", marginBottom: 8, fontFamily: "var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif", letterSpacing: "-0.01em" }}>
               No hay pagos registrados
             </h3>
             <p style={{ fontSize: 15, color: "#666", marginBottom: 24 }}>

@@ -104,7 +104,7 @@ export default function ModificacionesPage({ projects }: ModificacionesPageProps
     <div style={{ padding: "24px 32px", maxWidth: 1400, margin: "0 auto" }}>
       {/* Header con estadísticas */}
       <div style={{ marginBottom: 32 }}>
-        <h1 style={{ fontSize: 32, fontWeight: 800, color: "#111", margin: 0, marginBottom: 8 }}>
+        <h1 style={{ fontSize: 32, fontWeight: 800, color: "#111", margin: 0, marginBottom: 8, fontFamily: "var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif", letterSpacing: "-0.02em" }}>
           Solicitudes de Modificación
         </h1>
         <p style={{ fontSize: 15, color: "#666", margin: 0 }}>
@@ -362,7 +362,7 @@ export default function ModificacionesPage({ projects }: ModificacionesPageProps
                   borderBottom: "1px solid #e6eaf0",
                 }}
               >
-                <h3 style={{ fontSize: 18, fontWeight: 700, color: "#111", margin: 0 }}>
+                <h3 style={{ fontSize: 18, fontWeight: 700, color: "#111", margin: 0, fontFamily: "var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif", letterSpacing: "-0.01em" }}>
                   {getNombreProyecto(proyectoId)}
                 </h3>
                 <p style={{ fontSize: 13, color: "#666", margin: "4px 0 0" }}>

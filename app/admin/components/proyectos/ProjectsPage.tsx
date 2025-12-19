@@ -1,15 +1,18 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { Project, Client } from "../../types";
-import { FiCalendar, FiUser, FiCheckCircle, FiClock, FiAlertCircle } from "react-icons/fi";
+import { FiCalendar, FiUser, FiCheckCircle, FiClock, FiAlertCircle, FiTrash2, FiGrid, FiList } from "react-icons/fi";
 
 interface ProjectsPageProps {
   projects: Project[];
   clients: Client[];
   onSelectProject?: (project: Project) => void;
+  onDeleteProject?: (projectId: string) => void;
 }
 
-export default function ProjectsPage({ projects, clients, onSelectProject }: ProjectsPageProps) {
+export default function ProjectsPage({ projects, clients, onSelectProject, onDeleteProject }: ProjectsPageProps) {
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+
   // Función para obtener el nombre del cliente
   const getClientName = (clienteId: string) => {
     const client = clients.find((c) => c.id === clienteId);
@@ -62,13 +65,58 @@ export default function ProjectsPage({ projects, clients, onSelectProject }: Pro
   return (
     <div style={{ padding: "0 32px 32px 32px" }}>
       {/* Header */}
-      <div style={{ marginBottom: 32 }}>
-        <h1 style={{ fontSize: 32, fontWeight: 700, color: "#111", marginBottom: 8 }}>
-          Proyectos
-        </h1>
-        <p style={{ fontSize: 16, color: "#666" }}>
-          {projects.length} {projects.length === 1 ? "proyecto" : "proyectos"} en total
-        </p>
+      <div style={{ marginBottom: 24, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div>
+          <h1 style={{ fontSize: 32, fontWeight: 700, color: "#111", marginBottom: 8, fontFamily: "var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif", letterSpacing: "-0.02em" }}>
+            Proyectos
+          </h1>
+          <p style={{ fontSize: 16, color: "#666" }}>
+            {projects.length} {projects.length === 1 ? "proyecto" : "proyectos"} en total
+          </p>
+        </div>
+        
+        {/* Botones de vista */}
+        <div
+          style={{
+            display: "flex",
+            background: "#f6f7fa",
+            borderRadius: 10,
+            padding: 4,
+          }}
+        >
+          <button
+            onClick={() => setViewMode("grid")}
+            style={{
+              padding: "8px 16px",
+              background: viewMode === "grid" ? "#fff" : "transparent",
+              border: "none",
+              borderRadius: 8,
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              transition: "all 0.2s",
+              boxShadow: viewMode === "grid" ? "0 1px 3px rgba(0, 0, 0, 0.1)" : "none",
+            }}
+          >
+            <FiGrid size={18} color={viewMode === "grid" ? "#0049ff" : "#666"} />
+          </button>
+          <button
+            onClick={() => setViewMode("list")}
+            style={{
+              padding: "8px 16px",
+              background: viewMode === "list" ? "#fff" : "transparent",
+              border: "none",
+              borderRadius: 8,
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              transition: "all 0.2s",
+              boxShadow: viewMode === "list" ? "0 1px 3px rgba(0, 0, 0, 0.1)" : "none",
+            }}
+          >
+            <FiList size={18} color={viewMode === "list" ? "#0049ff" : "#666"} />
+          </button>
+        </div>
       </div>
 
       {/* Tarjetas de Resumen */}
@@ -155,7 +203,7 @@ export default function ProjectsPage({ projects, clients, onSelectProject }: Pro
           }}
         >
           <div style={{ fontSize: 48, marginBottom: 16 }}>📋</div>
-          <h3 style={{ color: "#111", fontSize: 20, fontWeight: 600, marginBottom: 8 }}>
+          <h3 style={{ color: "#111", fontSize: 20, fontWeight: 600, marginBottom: 8, fontFamily: "var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif", letterSpacing: "-0.01em" }}>
             No hay proyectos aún
           </h3>
           <p style={{ color: "#666", fontSize: 16 }}>
@@ -165,8 +213,9 @@ export default function ProjectsPage({ projects, clients, onSelectProject }: Pro
       ) : (
         <div
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(350px, 1fr))",
+            display: viewMode === "grid" ? "grid" : "flex",
+            gridTemplateColumns: viewMode === "grid" ? "repeat(auto-fill, minmax(350px, 1fr))" : undefined,
+            flexDirection: viewMode === "list" ? "column" : undefined,
             gap: 24,
           }}
         >
@@ -209,33 +258,64 @@ export default function ProjectsPage({ projects, clients, onSelectProject }: Pro
                       color: "#111",
                       margin: 0,
                       lineHeight: 1.3,
+                      fontFamily: "var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+                      letterSpacing: "-0.01em",
                     }}
                   >
                     {project.nombre}
                   </h3>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 6,
-                      padding: "4px 12px",
-                      borderRadius: 20,
-                      background: getEstadoColor(project.estado || "pendiente") + "15",
-                      color: getEstadoColor(project.estado || "pendiente"),
-                      fontSize: 13,
-                      fontWeight: 600,
-                    }}
-                  >
-                    {getEstadoIcon(project.estado || "pendiente")}
-                    <span>
-                      {project.estado === "en_progreso"
-                        ? "En Progreso"
-                        : project.estado === "completado"
-                        ? "Completado"
-                        : project.estado === "pendiente"
-                        ? "Pendiente"
-                        : "Cancelado"}
-                    </span>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 6,
+                        padding: "4px 12px",
+                        borderRadius: 20,
+                        background: getEstadoColor(project.estado || "pendiente") + "15",
+                        color: getEstadoColor(project.estado || "pendiente"),
+                        fontSize: 13,
+                        fontWeight: 600,
+                      }}
+                    >
+                      {getEstadoIcon(project.estado || "pendiente")}
+                      <span>
+                        {project.estado === "en_progreso"
+                          ? "En Progreso"
+                          : project.estado === "completado"
+                          ? "Completado"
+                          : project.estado === "pendiente"
+                          ? "Pendiente"
+                          : "Cancelado"}
+                      </span>
+                    </div>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (onDeleteProject && window.confirm(`¿Estás seguro de eliminar el proyecto "${project.nombre}"?`)) {
+                          onDeleteProject(project.id);
+                        }
+                      }}
+                      style={{
+                        background: "transparent",
+                        border: "none",
+                        padding: 8,
+                        cursor: "pointer",
+                        borderRadius: 6,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        transition: "all 0.2s",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = "rgba(239, 68, 68, 0.1)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = "transparent";
+                      }}
+                    >
+                      <FiTrash2 size={18} color="#ef4444" />
+                    </button>
                   </div>
                 </div>
                 <div

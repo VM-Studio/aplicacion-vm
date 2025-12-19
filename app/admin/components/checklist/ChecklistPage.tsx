@@ -131,7 +131,7 @@ export default function ChecklistPage({
           }}
         >
           <div>
-            <h1 style={{ fontSize: 32, fontWeight: 700, color: "#111", marginBottom: 8 }}>
+            <h1 style={{ fontSize: 32, fontWeight: 700, color: "#111", marginBottom: 8, fontFamily: "var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif", letterSpacing: "-0.02em" }}>
               Checklist Global
             </h1>
             <p style={{ fontSize: 15, color: "#666" }}>
@@ -451,7 +451,7 @@ export default function ChecklistPage({
             >
               <FiList size={32} color="#ccc" />
             </div>
-            <h3 style={{ fontSize: 20, fontWeight: 600, color: "#111", marginBottom: 8 }}>
+            <h3 style={{ fontSize: 20, fontWeight: 600, color: "#111", marginBottom: 8, fontFamily: "var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif", letterSpacing: "-0.01em" }}>
               No se encontraron tareas
             </h3>
             <p style={{ fontSize: 15, color: "#666" }}>
@@ -730,6 +730,8 @@ export default function ChecklistPage({
                           color: task.checked ? "#999" : "#111",
                           textDecoration: task.checked ? "line-through" : "none",
                           marginBottom: 8,
+                          fontFamily: "var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+                          letterSpacing: "-0.01em",
                         }}
                       >
                         {task.nombre}
