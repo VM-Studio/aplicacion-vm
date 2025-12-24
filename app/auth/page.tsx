@@ -3,11 +3,10 @@ import Image from "next/image";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-// Usuarios del sistema (hardcoded para demo)
-// const USERS = [
-//   { username: "cliente123", password: "123", role: "cliente" },
-//   { username: "admin123", password: "123", role: "admin" },
-// ];
+const USERS = [
+  { username: "cliente123", password: "123", role: "cliente" },
+  { username: "admin123", password: "123", role: "admin" },
+];
 
 export default function AuthPage() {
 

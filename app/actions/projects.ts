@@ -3,6 +3,16 @@
 import { supabase } from "@/lib/supabaseClient";
 import { revalidatePath } from "next/cache";
 
+type ProjectData = {
+  nombre: string;
+  descripcion?: string;
+  fecha_estimada?: string;
+  avance?: number;
+  url_proyecto?: string;
+  codigo?: string;
+  cliente_id: string;
+};
+
 export async function getProjects() {
   const { data, error } = await supabase
     .from("projects")
@@ -24,7 +34,7 @@ export async function getProjectById(id: string) {
   return data;
 }
 
-export async function createProject(projectData: any) {
+export async function createProject(projectData: ProjectData) {
   const { data, error } = await supabase
     .from("projects")
     .insert([projectData])
@@ -36,7 +46,7 @@ export async function createProject(projectData: any) {
   return data;
 }
 
-export async function updateProject(id: string, updates: any) {
+export async function updateProject(id: string, updates: Partial<ProjectData>) {
   const { data, error } = await supabase
     .from("projects")
     .update(updates)

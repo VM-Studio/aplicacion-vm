@@ -12,7 +12,7 @@ export default function Home() {
     const start = Date.now();
     intervalRef.current = setInterval(() => {
       const elapsed = Date.now() - start;
-      const percent = Math.min(100, Math.round((elapsed / 2000) * 100));
+      const percent = Math.min(100, Math.round((elapsed / 3000) * 100));
       setProgress(percent);
       if (percent >= 100 && intervalRef.current) {
         clearInterval(intervalRef.current);

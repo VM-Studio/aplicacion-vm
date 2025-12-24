@@ -60,3 +60,29 @@ export async function getUnreadCount(projectId: string, sender: "client" | "admi
   if (error) throw error;
   return data?.length || 0;
 }
+
+export async function updateMessage(id: string, updates: Record<string, unknown>) {
+  const { data, error } = await supabase
+    .from("messages")
+    .update(updates)
+    .eq("id", id)
+    .select()
+    .single();
+  
+  if (error) throw error;
+  revalidatePath("/admin");
+  revalidatePath("/cliente");
+  return data;
+}
+
+export async function deleteMessage(id: string) {
+  const { error } = await supabase
+    .from("messages")
+    .delete()
+    .eq("id", id);
+  
+  if (error) throw error;
+  revalidatePath("/admin");
+  revalidatePath("/cliente");
+  return { success: true };
+}
